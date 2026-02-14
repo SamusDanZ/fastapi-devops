@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="es">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Borrar Videojuego</title>
+        <link rel="stylesheet" href="/static/style.css" />
+    </head>
+    <body class="page">
+        <header class="topbar">
+            <div class="container topbar-inner">
+                <div class="brand">
+                    <div class="brand-title">Videojuegos Hub</div>
+                    <div class="brand-sub">Eliminar un titulo</div>
+                </div>
+                <nav class="nav">
+                    <a href="/">Inicio</a>
+                    <a href="/videojuegos">Videojuegos</a>
+                    <a href="/logout">Salir</a>
+                </nav>
+            </div>
+        </header>
+
+        <main class="main">
+            <div class="container">
+                <section class="card stack">
+                    <h1>Borrar videojuego</h1>
+                    <p>Selecciona un videojuego y confirma el borrado.</p>
+                    <form class="form" method="post" action="/do_borrar_videojuego" enctype="application/x-www-form-urlencoded">
+                        <div class="form-row">
+                            <label for="id">Videojuego</label>
+                            <select id="id" name="id" required>
+                                {% for videojuego in videojuegos %}
+                                <option value="{{ videojuego.id }}">{{ videojuego.nombre }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="actions">
+                            <button class="btn btn-danger" type="submit">Borrar videojuego</button>
+                            <a class="btn btn-ghost" href="/videojuegos">Volver a la lista</a>
+                        </div>
+                    </form>
+                </section>
+            </div>
+        </main>
+
+        <footer class="footer">
+            <a href="/">Volver al inicio</a>
+        </footer>
+    </body>
+</html>

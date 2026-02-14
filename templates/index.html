@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inicio</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body class="page">
+    <header class="topbar">
+        <div class="container topbar-inner">
+            <div class="brand">
+                <div class="brand-title">Videojuegos Hub</div>
+                <div class="brand-sub">Tu coleccion y tus puntuaciones</div>
+            </div>
+            <nav class="nav">
+                <a href="/">Inicio</a>
+                <a href="/videojuegos">Videojuegos</a>
+                {% if user %}
+                <a href="/mis_puntuaciones">Mis puntuaciones</a>
+                <a href="/puntuaciones">Puntuaciones usuarios</a>
+                <a href="/insert_videojuegos">Insertar</a>
+                <a href="/borrar_videojuegos">Borrar</a>
+                {% endif %}
+                {% if user and user.is_admin %}
+                <a class="nav-admin" href="/admin">Admin</a>
+                {% endif %}
+                {% if user %}
+                <a href="/logout">Salir</a>
+                {% else %}
+                <a href="/login">Login</a>
+                {% endif %}
+            </nav>
+        </div>
+    </header>
+
+    <main class="main">
+        <div class="container stack">
+            <section class="card hero">
+                <h1>Bienvenido a tu biblioteca gamer</h1>
+                <p>Gestiona tu lista de videojuegos y guarda tu puntuacion personal en un solo lugar.</p>
+                {% if user %}
+                <div class="actions">
+                    <span class="badge">Hola, {{ user.username }}</span>
+                    {% if user.is_admin %}
+                    <span class="badge badge-warm">Administrador</span>
+                    {% endif %}
+                </div>
+                {% endif %}
+            </section>
+
+            {% if not user %}
+            <section class="card stack">
+                <h2>Empieza en segundos</h2>
+                <p>Inicia sesion para ver la lista completa y puntuar cada juego.</p>
+                <div class="actions">
+                    <a class="btn" href="/login">Iniciar sesion</a>
+                    <a class="btn btn-ghost" href="/registro">Crear cuenta</a>
+                </div>
+            </section>
+            {% endif %}
+        </div>
+    </main>
+
+    <footer class="footer">
+        Hecho para gestionar tu coleccion de videojuegos.
+    </footer>
+</body>
+</html>

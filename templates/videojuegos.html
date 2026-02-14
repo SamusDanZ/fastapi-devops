@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Lista de Videojuegos</title>
+    <link rel="stylesheet" href="/static/style.css" />
+  </head>
+  <body class="page">
+    <header class="topbar">
+      <div class="container topbar-inner">
+        <div class="brand">
+          <div class="brand-title">Videojuegos Hub</div>
+          <div class="brand-sub">Tu ranking personal</div>
+        </div>
+        <nav class="nav">
+          <a href="/">Inicio</a>
+          <a href="/videojuegos">Videojuegos</a>
+          <a href="/mis_puntuaciones">Mis puntuaciones</a>
+          <a href="/puntuaciones">Puntuaciones usuarios</a>
+          {% if user and user.is_admin %}
+          <a class="nav-admin" href="/admin">Admin</a>
+          {% endif %}
+          <a href="/logout">Salir</a>
+        </nav>
+      </div>
+    </header>
+
+    <main class="main">
+      <div class="container stack">
+        <section class="card stack">
+          <h1>Lista de videojuegos</h1>
+          <p>Elige tu puntuacion y guardala cuando quieras.</p>
+
+          {% if request.query_params.get('error') == 'puntuacion' %}
+          <div class="notice error">La puntuacion debe estar entre 1 y 10.</div>
+          {% endif %}
+
+          <div class="actions">
+            {% if user and user.is_admin %}
+            <a class="btn" href="/insert_videojuegos">Insertar videojuego</a>
+            <a class="btn btn-ghost" href="/borrar_videojuegos">Borrar videojuegos</a>
+            {% endif %}
+            <a class="btn btn-ghost" href="/mis_puntuaciones">Mis puntuaciones</a>
+            <a class="btn btn-ghost" href="/puntuaciones">Puntuaciones usuarios</a>
+          </div>
+
+          {% if videojuegos and videojuegos|length > 0 %}
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Nombre</th>
+                  <th>Media</th>
+                  <th>Mi puntuacion</th>
+                  <th>Acciones</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for videojuego in videojuegos %}
+                  {% set mi_valoracion = puntuaciones.get(videojuego.id) if puntuaciones else None %}
+                  {% set mi_puntuacion = mi_valoracion.puntuacion if mi_valoracion else None %}
+                  {% set promedio = promedios.get(videojuego.id) if promedios else None %}
+                  <tr>
+                    <td>{{ videojuego.id }}</td>
+                    <td><a href="/videojuego/{{ videojuego.id }}" style="color: var(--accent); text-decoration: none; font-weight: 500;">{{ videojuego.nombre }}</a></td>
+                    <td>
+                      {% if promedio %}
+                        <span class="badge">{{ promedio }}</span>
+                      {% else %}
+                        <span class="badge">-</span>
+                      {% endif %}
+                    </td>
+                    <td>
+                      {% if mi_puntuacion %}
+                        <span class="badge" style="background: rgba(34, 211, 238, 0.2);">{{ mi_puntuacion }}/10</span>
+                      {% else %}
+                        <span style="color: #64748b;">Sin puntuar</span>
+                      {% endif %}
+                    </td>
+                    <td>
+                      <a class="btn btn-ghost" href="/videojuego/{{ videojuego.id }}">Ver ficha</a>
+                      {% if user and user.is_admin %}
+                      <a class="btn btn-ghost" href="/editar_videojuego?id={{ videojuego.id }}">Editar</a>
+                      {% endif %}
+                    </td>
+                  </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          {% else %}
+            <p>No hay videojuegos registrados.</p>
+          {% endif %}
+        </section>
+      </div>
+    </main>
+
+    <footer class="footer">
+      <a href="/">Volver al inicio</a>
+    </footer>
+  </body>
+</html>

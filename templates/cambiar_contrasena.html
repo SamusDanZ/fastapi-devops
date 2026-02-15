@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+
+{% block title %}Cambiar contrasena{% endblock %}
+{% block brand_sub %}Seguridad de tu cuenta{% endblock %}
+
+{% block content %}
+  <div class="container">
+    <section class="card stack">
+      <h1>Cambiar contrasena</h1>
+      <p>Introduce tu contrasena actual y la nueva contrasena.</p>
+
+      {% if error %}
+      <div class="notice error">{{ error }}</div>
+      {% endif %}
+
+      {% if success %}
+      <div class="notice">{{ success }}</div>
+      {% endif %}
+
+      <form class="form" method="post" action="/do_cambiar_contrasena">
+        <div class="form-row">
+          <label for="current_password">Contrasena actual</label>
+          <input type="password" id="current_password" name="current_password" required>
+        </div>
+        <div class="form-row">
+          <label for="new_password">Nueva contrasena</label>
+          <input type="password" id="new_password" name="new_password" required>
+        </div>
+        <div class="form-row">
+          <label for="confirm_password">Repite la nueva contrasena</label>
+          <input type="password" id="confirm_password" name="confirm_password" required>
+        </div>
+        <div class="actions">
+          <button class="btn" type="submit">Actualizar contrasena</button>
+          <a class="btn btn-ghost" href="/">Cancelar</a>
+        </div>
+      </form>
+    </section>
+  </div>
+{% endblock %}

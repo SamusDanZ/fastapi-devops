@@ -329,6 +329,54 @@ async def do_login(request: Request,
     
     return RedirectResponse(url="/", status_code=303)
 
+# RUTA CAMBIAR CONTRASENA (Mostrar formulario)
+@app.get("/cambiar_contrasena")
+async def cambiar_contrasena(request: Request, current_user: User | None = Depends(get_current_user)):
+    if not current_user:
+        return RedirectResponse(url="/login", status_code=303)
+
+    return templates.TemplateResponse("cambiar_contrasena.html", {
+        "request": request,
+        "user": current_user,
+    })
+
+# RUTA CAMBIAR CONTRASENA (Procesar formulario)
+@app.post("/do_cambiar_contrasena")
+async def do_cambiar_contrasena(
+    request: Request,
+    current_password: Annotated[str, Form()],
+    new_password: Annotated[str, Form()],
+    confirm_password: Annotated[str, Form()],
+    current_user: User | None = Depends(get_current_user),
+):
+    if not current_user:
+        return RedirectResponse(url="/login", status_code=303)
+
+    if not current_user.check_password(current_password):
+        return templates.TemplateResponse("cambiar_contrasena.html", {
+            "request": request,
+            "user": current_user,
+            "error": "La contrasena actual no es correcta",
+        })
+
+    if new_password != confirm_password:
+        return templates.TemplateResponse("cambiar_contrasena.html", {
+            "request": request,
+            "user": current_user,
+            "error": "Las contrasenas nuevas no coinciden",
+        })
+
+    current_user.set_password(new_password)
+    db = get_db()
+    user_repo = UserRepository()
+    user_repo.actualizar_usuario(db, current_user)
+
+    return templates.TemplateResponse("cambiar_contrasena.html", {
+        "request": request,
+        "user": current_user,
+        "success": "Contrasena actualizada correctamente",
+    })
+
 # RUTA LOGOUT
 @app.get("/logout")
 async def logout(request: Request):

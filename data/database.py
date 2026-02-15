@@ -10,7 +10,8 @@ def get_database_connection():
         # Intentar conexión al servidor remoto
         print("Intentando conectar a informatica.iesquevedo.es...")
         database = mysql.connector.connect(
-            host='informatica.iesquevedo.es',
+            #host='informatica.iesquevedo.es',
+            host='83.33.148.8',
             port=3333,
             ssl_disabled=True,
             user='root',

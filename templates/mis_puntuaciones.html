@@ -1,85 +1,56 @@
-<!doctype html>
-<html lang="es">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Mis Puntuaciones</title>
-    <link rel="stylesheet" href="/static/style.css" />
-  </head>
-  <body class="page">
-    <header class="topbar">
-      <div class="container topbar-inner">
-        <div class="brand">
-          <div class="brand-title">Videojuegos Hub</div>
-          <div class="brand-sub">Tu historial personal</div>
+{% extends "base.html" %}
+
+{% block title %}Mis Puntuaciones{% endblock %}
+{% block brand_sub %}Tu historial personal{% endblock %}
+
+{% block content %}
+  <div class="container stack">
+    <section class="card stack">
+      <h1>Mis puntuaciones</h1>
+      <p>Aqui puedes ver todas las puntuaciones que has dado.</p>
+
+      {% if valoraciones and valoraciones|length > 0 %}
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Videojuego</th>
+              <th>Puntuacion</th>
+              <th>Comentario</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for fila in valoraciones %}
+            <tr>
+              <td><a href="/videojuego/{{ fila.videojuego_id }}" style="color: var(--accent); text-decoration: none; font-weight: 500;">{{ fila.videojuego }}</a></td>
+              <td colspan="3">
+                <form class="rating-form" method="post" action="/puntuar_videojuego" style="display: flex; gap: 12px; align-items: flex-start; margin: 0;">
+                  <input type="hidden" name="videojuego_id" value="{{ fila.videojuego_id }}" />
+                  <div style="min-width: 80px;">
+                    <select name="puntuacion" required>
+                      {% for valor in range(1, 11) %}
+                        <option value="{{ valor }}" {% if fila.puntuacion == valor %}selected{% endif %}>{{ valor }}</option>
+                      {% endfor %}
+                    </select>
+                  </div>
+                  <div style="flex: 1;">
+                    <textarea name="comentario" maxlength="500" placeholder="Tu opinion sobre el juego..." style="min-height: 60px;">{{ fila.comentario }}</textarea>
+                  </div>
+                  <div>
+                    <button class="btn btn-ghost" type="submit">Guardar</button>
+                  </div>
+                </form>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      {% else %}
+        <div class="notice">Todavia no has puntuado ningun videojuego.</div>
+        <div class="actions">
+          <a class="btn" href="/videojuegos">Ir a puntuar</a>
         </div>
-        <nav class="nav">
-          <a href="/">Inicio</a>
-          <a href="/videojuegos">Videojuegos</a>
-          <a href="/mis_puntuaciones">Mis puntuaciones</a>
-          <a href="/puntuaciones">Puntuaciones usuarios</a>
-          {% if user and user.is_admin %}
-          <a class="nav-admin" href="/admin">Admin</a>
-          {% endif %}
-          <a href="/logout">Salir</a>
-        </nav>
-      </div>
-    </header>
-
-    <main class="main">
-      <div class="container stack">
-        <section class="card stack">
-          <h1>Mis puntuaciones</h1>
-          <p>Aqui puedes ver todas las puntuaciones que has dado.</p>
-
-          {% if valoraciones and valoraciones|length > 0 %}
-            <table class="table">
-              <thead>
-                <tr>
-                  <th>Videojuego</th>
-                  <th>Puntuacion</th>
-                  <th>Comentario</th>
-                  <th>Acciones</th>
-                </tr>
-              </thead>
-              <tbody>
-                {% for fila in valoraciones %}
-                <tr>
-                  <td><a href="/videojuego/{{ fila.videojuego_id }}" style="color: var(--accent); text-decoration: none; font-weight: 500;">{{ fila.videojuego }}</a></td>
-                  <td colspan="3">
-                    <form class="rating-form" method="post" action="/puntuar_videojuego" style="display: flex; gap: 12px; align-items: flex-start; margin: 0;">
-                      <input type="hidden" name="videojuego_id" value="{{ fila.videojuego_id }}" />
-                      <div style="min-width: 80px;">
-                        <select name="puntuacion" required>
-                          {% for valor in range(1, 11) %}
-                            <option value="{{ valor }}" {% if fila.puntuacion == valor %}selected{% endif %}>{{ valor }}</option>
-                          {% endfor %}
-                        </select>
-                      </div>
-                      <div style="flex: 1;">
-                        <textarea name="comentario" maxlength="500" placeholder="Tu opinion sobre el juego..." style="min-height: 60px;">{{ fila.comentario }}</textarea>
-                      </div>
-                      <div>
-                        <button class="btn btn-ghost" type="submit">Guardar</button>
-                      </div>
-                    </form>
-                  </td>
-                </tr>
-                {% endfor %}
-              </tbody>
-            </table>
-          {% else %}
-            <div class="notice">Todavia no has puntuado ningun videojuego.</div>
-            <div class="actions">
-              <a class="btn" href="/videojuegos">Ir a puntuar</a>
-            </div>
-          {% endif %}
-        </section>
-      </div>
-    </main>
-
-    <footer class="footer">
-      <a href="/">Volver al inicio</a>
-    </footer>
-  </body>
-</html>
+      {% endif %}
+    </section>
+  </div>
+{% endblock %}

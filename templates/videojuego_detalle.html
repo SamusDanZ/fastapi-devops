@@ -1,114 +1,89 @@
-<!doctype html>
-<html lang="es">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>{{ videojuego.nombre }} - Ficha</title>
-    <link rel="stylesheet" href="/static/style.css" />
-  </head>
-  <body class="page">
-    <header class="topbar">
-      <div class="container topbar-inner">
-        <div class="brand">
-          <div class="brand-title">Videojuegos Hub</div>
-          <div class="brand-sub">Ficha del videojuego</div>
-        </div>
-        <nav class="nav">
-          <a href="/">Inicio</a>
-          <a href="/videojuegos">Videojuegos</a>
-          <a href="/mis_puntuaciones">Mis puntuaciones</a>
-          <a href="/puntuaciones">Puntuaciones usuarios</a>
-          {% if user and user.is_admin %}
-          <a class="nav-admin" href="/admin">Admin</a>
-          {% endif %}
-          <a href="/logout">Salir</a>
-        </nav>
-      </div>
-    </header>
+{% extends "base.html" %}
 
-    <main class="main">
-      <div class="container stack">
-        <section class="card stack">
-          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
-            <h1 style="margin: 0;">{{ videojuego.nombre }}</h1>
-            {% if promedio %}
-              <div style="text-align: right;">
-                <div style="font-size: 0.85rem; color: #94a3b8; margin-bottom: 4px;">Puntuacion media</div>
-                <div style="font-size: 2rem; font-weight: bold; color: var(--accent);">{{ promedio }}</div>
-                <div style="font-size: 0.75rem; color: #64748b;">de {{ valoraciones|length }} valoraciones</div>
-              </div>
-            {% else %}
-              <div style="text-align: right;">
-                <div style="font-size: 0.85rem; color: #94a3b8;">Sin valoraciones</div>
-              </div>
-            {% endif %}
+{% block title %}{{ videojuego.nombre }} - Ficha{% endblock %}
+{% block brand_sub %}Ficha del videojuego{% endblock %}
+
+{% block content %}
+  <div class="container stack">
+    <section class="card stack">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+        <h1 style="margin: 0;">{{ videojuego.nombre }}</h1>
+        {% if promedio %}
+          <div style="text-align: right;">
+            <div style="font-size: 0.85rem; color: #94a3b8; margin-bottom: 4px;">Puntuacion media</div>
+            <div style="font-size: 2rem; font-weight: bold; color: var(--accent);">{{ promedio }}</div>
+            <div style="font-size: 0.75rem; color: #64748b;">de {{ valoraciones|length }} valoraciones</div>
           </div>
+        {% else %}
+          <div style="text-align: right;">
+            <div style="font-size: 0.85rem; color: #94a3b8;">Sin valoraciones</div>
+          </div>
+        {% endif %}
+      </div>
 
-          <div class="card valoracion-form-card">
-            <h2 style="margin-top: 0;">Tu valoracion</h2>
-            <form method="post" action="/puntuar_videojuego">
-              <input type="hidden" name="videojuego_id" value="{{ videojuego.id }}" />
-              
-              <div class="valoracion-grid">
-                <div>
-                  <label class="valoracion-label">Puntuacion</label>
-                  <select name="puntuacion" required class="puntuacion-select">
-                    {% if mi_valoracion %}
-                      {% for valor in range(1, 11) %}
-                        <option value="{{ valor }}" {% if mi_valoracion.puntuacion == valor %}selected{% endif %}>{{ valor }}/10</option>
-                      {% endfor %}
-                    {% else %}
-                      <option value="" disabled selected>-- / 10</option>
-                      {% for valor in range(1, 11) %}
-                        <option value="{{ valor }}">{{ valor }}/10</option>
-                      {% endfor %}
-                    {% endif %}
-                  </select>
-                </div>
-
-                <div>
-                  <label class="valoracion-label">Comentario</label>
-                  <textarea name="comentario" maxlength="500" placeholder="Comparte tu opinion sobre este videojuego..." class="comentario-textarea">{% if mi_valoracion %}{{ mi_valoracion.comentario }}{% endif %}</textarea>
-                  <div style="text-align: right; font-size: 0.75rem; color: #64748b; margin-top: 4px;">Max. 500 caracteres</div>
-                </div>
-              </div>
-
-              <button class="btn valoracion-submit" type="submit">
+      <div class="card valoracion-form-card">
+        <h2 style="margin-top: 0;">Tu valoracion</h2>
+        <form method="post" action="/puntuar_videojuego">
+          <input type="hidden" name="videojuego_id" value="{{ videojuego.id }}" />
+          
+          <div class="valoracion-grid">
+            <div>
+              <label class="valoracion-label">Puntuacion</label>
+              <select name="puntuacion" required class="puntuacion-select">
                 {% if mi_valoracion %}
-                  ✓ Actualizar valoracion
+                  {% for valor in range(1, 11) %}
+                    <option value="{{ valor }}" {% if mi_valoracion.puntuacion == valor %}selected{% endif %}>{{ valor }}/10</option>
+                  {% endfor %}
                 {% else %}
-                  ★ Guardar valoracion
+                  <option value="" disabled selected>-- / 10</option>
+                  {% for valor in range(1, 11) %}
+                    <option value="{{ valor }}">{{ valor }}/10</option>
+                  {% endfor %}
                 {% endif %}
-              </button>
-            </form>
+              </select>
+            </div>
+
+            <div>
+              <label class="valoracion-label">Comentario</label>
+              <textarea name="comentario" maxlength="500" placeholder="Comparte tu opinion sobre este videojuego..." class="comentario-textarea">{% if mi_valoracion %}{{ mi_valoracion.comentario }}{% endif %}</textarea>
+              <div style="text-align: right; font-size: 0.75rem; color: #64748b; margin-top: 4px;">Max. 500 caracteres</div>
+            </div>
           </div>
 
-          <h2>Valoraciones de usuarios</h2>
-          {% if valoraciones and valoraciones|length > 0 %}
-            <div class="stack" style="gap: 1rem;">
-              {% for val in valoraciones %}
-                <div class="card" style="background: #0b0b0f;">
-                  <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 0.5rem;">
-                    <div style="font-weight: 600; color: var(--accent);">{{ val.username }}</div>
-                    <span class="badge" style="font-size: 1.1rem; padding: 6px 14px;">{{ val.puntuacion }}/10</span>
-                  </div>
-                  {% if val.comentario %}
-                    <div style="color: #cbd5e1; line-height: 1.6; margin-top: 0.75rem;">{{ val.comentario }}</div>
-                  {% else %}
-                    <div style="color: #64748b; font-style: italic;">Sin comentario</div>
-                  {% endif %}
-                </div>
-              {% endfor %}
-            </div>
-          {% else %}
-            <div class="notice">Todavia no hay valoraciones para este videojuego. ¡Se el primero en valorarlo!</div>
-          {% endif %}
-        </section>
+          <button class="btn valoracion-submit" type="submit">
+            {% if mi_valoracion %}
+              ✓ Actualizar valoracion
+            {% else %}
+              ★ Guardar valoracion
+            {% endif %}
+          </button>
+        </form>
       </div>
-    </main>
 
-    <footer class="footer">
-      <a href="/videojuegos">Volver a la lista</a>
-    </footer>
-  </body>
-</html>
+      <h2>Valoraciones de usuarios</h2>
+      {% if valoraciones and valoraciones|length > 0 %}
+        <div class="stack" style="gap: 1rem;">
+          {% for val in valoraciones %}
+            <div class="card" style="background: #0b0b0f;">
+              <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 0.5rem;">
+                <div style="font-weight: 600; color: var(--accent);">{{ val.username }}</div>
+                <span class="badge" style="font-size: 1.1rem; padding: 6px 14px;">{{ val.puntuacion }}/10</span>
+              </div>
+              {% if val.comentario %}
+                <div style="color: #cbd5e1; line-height: 1.6; margin-top: 0.75rem;">{{ val.comentario }}</div>
+              {% else %}
+                <div style="color: #64748b; font-style: italic;">Sin comentario</div>
+              {% endif %}
+            </div>
+          {% endfor %}
+        </div>
+      {% else %}
+        <div class="notice">Todavia no hay valoraciones para este videojuego. ¡Se el primero en valorarlo!</div>
+      {% endif %}
+    </section>
+  </div>
+{% endblock %}
+
+{% block footer %}
+  <a href="/videojuegos">Volver a la lista</a>
+{% endblock %}

@@ -1,52 +1,28 @@
-<!doctype html>
-<html lang="es">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Insertar Videojuego</title>
-    <link rel="stylesheet" href="/static/style.css" />
-  </head>
-  <body class="page">
-    <header class="topbar">
-      <div class="container topbar-inner">
-        <div class="brand">
-          <div class="brand-title">Videojuegos Hub</div>
-          <div class="brand-sub">Nuevo titulo</div>
+{% extends "base.html" %}
+
+{% block title %}Insertar Videojuego{% endblock %}
+{% block brand_sub %}Nuevo titulo{% endblock %}
+
+{% block content %}
+  <div class="container">
+    <section class="card stack">
+      <h1>Insertar videojuego</h1>
+      <p>Usa el formulario para anadir un videojuego (solo nombre).</p>
+
+      {% if error %}
+      <div class="notice error">{{ error }}</div>
+      {% endif %}
+
+      <form class="form" method="post" action="/do_insertar_videojuego">
+        <div class="form-row">
+          <label for="nombre">Nombre</label>
+          <input type="text" id="nombre" name="nombre" required />
         </div>
-        <nav class="nav">
-          <a href="/">Inicio</a>
-          <a href="/videojuegos">Videojuegos</a>
-          <a href="/logout">Salir</a>
-        </nav>
-      </div>
-    </header>
-
-    <main class="main">
-      <div class="container">
-        <section class="card stack">
-          <h1>Insertar videojuego</h1>
-          <p>Usa el formulario para anadir un videojuego (solo nombre).</p>
-
-          {% if error %}
-          <div class="notice error">{{ error }}</div>
-          {% endif %}
-
-          <form class="form" method="post" action="/do_insertar_videojuego">
-            <div class="form-row">
-              <label for="nombre">Nombre</label>
-              <input type="text" id="nombre" name="nombre" required />
-            </div>
-            <div class="actions">
-              <button class="btn" type="submit">Guardar</button>
-              <a class="btn btn-ghost" href="/videojuegos">Volver a la lista</a>
-            </div>
-          </form>
-        </section>
-      </div>
-    </main>
-
-    <footer class="footer">
-      <a href="/">Volver al inicio</a>
-    </footer>
-  </body>
-</html>
+        <div class="actions">
+          <button class="btn" type="submit">Guardar</button>
+          <a class="btn btn-ghost" href="/videojuegos">Volver a la lista</a>
+        </div>
+      </form>
+    </section>
+  </div>
+{% endblock %}

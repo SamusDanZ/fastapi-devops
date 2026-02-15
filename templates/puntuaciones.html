@@ -1,67 +1,38 @@
-<!doctype html>
-<html lang="es">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Puntuaciones</title>
-    <link rel="stylesheet" href="/static/style.css" />
-  </head>
-  <body class="page">
-    <header class="topbar">
-      <div class="container topbar-inner">
-        <div class="brand">
-          <div class="brand-title">Videojuegos Hub</div>
-          <div class="brand-sub">Puntuaciones de la comunidad</div>
-        </div>
-        <nav class="nav">
-          <a href="/">Inicio</a>
-          <a href="/videojuegos">Videojuegos</a>
-          <a href="/mis_puntuaciones">Mis puntuaciones</a>
-          <a href="/puntuaciones">Puntuaciones usuarios</a>
-          {% if user and user.is_admin %}
-          <a class="nav-admin" href="/admin">Admin</a>
-          {% endif %}
-          <a href="/logout">Salir</a>
-        </nav>
-      </div>
-    </header>
+{% extends "base.html" %}
 
-    <main class="main">
-      <div class="container stack">
-        <section class="card stack">
-          <h1>Puntuaciones de usuarios</h1>
-          <p>Consulta lo que otros usuarios han valorado.</p>
+{% block title %}Puntuaciones{% endblock %}
+{% block brand_sub %}Puntuaciones de la comunidad{% endblock %}
 
-          {% if valoraciones and valoraciones|length > 0 %}
-            <table class="table">
-              <thead>
-                <tr>
-                  <th>Usuario</th>
-                  <th>Videojuego</th>
-                  <th>Puntuacion</th>
-                  <th>Comentario</th>
-                </tr>
-              </thead>
-              <tbody>
-                {% for fila in valoraciones %}
-                <tr>
-                  <td>{{ fila.username }}</td>
-                  <td><a href="/videojuego/{{ fila.videojuego_id }}" style="color: var(--accent); text-decoration: none; font-weight: 500;">{{ fila.videojuego }}</a></td>
-                  <td>{{ fila.puntuacion }}</td>
-                  <td>{{ fila.comentario if fila.comentario else "-" }}</td>
-                </tr>
-                {% endfor %}
-              </tbody>
-            </table>
-          {% else %}
-            <div class="notice">Todavia no hay puntuaciones registradas.</div>
-          {% endif %}
-        </section>
-      </div>
-    </main>
+{% block content %}
+  <div class="container stack">
+    <section class="card stack">
+      <h1>Puntuaciones de usuarios</h1>
+      <p>Consulta lo que otros usuarios han valorado.</p>
 
-    <footer class="footer">
-      <a href="/">Volver al inicio</a>
-    </footer>
-  </body>
-</html>
+      {% if valoraciones and valoraciones|length > 0 %}
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Usuario</th>
+              <th>Videojuego</th>
+              <th>Puntuacion</th>
+              <th>Comentario</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for fila in valoraciones %}
+            <tr>
+              <td>{{ fila.username }}</td>
+              <td><a href="/videojuego/{{ fila.videojuego_id }}" style="color: var(--accent); text-decoration: none; font-weight: 500;">{{ fila.videojuego }}</a></td>
+              <td>{{ fila.puntuacion }}</td>
+              <td>{{ fila.comentario if fila.comentario else "-" }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      {% else %}
+        <div class="notice">Todavia no hay puntuaciones registradas.</div>
+      {% endif %}
+    </section>
+  </div>
+{% endblock %}

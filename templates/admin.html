@@ -1,103 +1,77 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Panel de Administracion</title>
-    <link rel="stylesheet" href="/static/style.css">
-</head>
-<body class="page">
-    <header class="topbar">
-        <div class="container topbar-inner">
-            <div class="brand">
-                <div class="brand-title">Videojuegos Hub</div>
-                <div class="brand-sub">Panel de control</div>
+{% extends "base.html" %}
+
+{% block title %}Panel de Administracion{% endblock %}
+{% block brand_sub %}Panel de control{% endblock %}
+
+{% block content %}
+    <div class="container stack">
+        <section class="card stack">
+            <h1>Panel de administracion</h1>
+            <div class="actions">
+                <span class="badge badge-warm">Admin: {{ user.username }}</span>
             </div>
-            <nav class="nav">
-                <a href="/">Inicio</a>
-                <a href="/videojuegos">Videojuegos</a>
-                <a href="/mis_puntuaciones">Mis puntuaciones</a>
-                <a href="/puntuaciones">Puntuaciones usuarios</a>
-                <a href="/logout">Salir</a>
-            </nav>
-        </div>
-    </header>
 
-    <main class="main">
-        <div class="container stack">
-            <section class="card stack">
-                <h1>Panel de administracion</h1>
-                <div class="actions">
-                    <span class="badge badge-warm">Admin: {{ user.username }}</span>
-                </div>
+            {% if request.query_params.get('error') == 'self_delete' %}
+            <div class="notice error">No puedes borrar tu propia cuenta de administrador.</div>
+            {% endif %}
 
-                {% if request.query_params.get('error') == 'self_delete' %}
-                <div class="notice error">No puedes borrar tu propia cuenta de administrador.</div>
-                {% endif %}
+            {% if request.query_params.get('error') == 'toggle_desactivado' %}
+            <div class="notice error">La opcion de cambiar roles de administrador esta desactivada.</div>
+            {% endif %}
 
-                {% if request.query_params.get('error') == 'toggle_desactivado' %}
-                <div class="notice error">La opcion de cambiar roles de administrador esta desactivada.</div>
-                {% endif %}
+            {% if request.query_params.get('error') == 'borrar_admin_no_permitido' %}
+            <div class="notice error">No se pueden borrar cuentas con rol de administrador.</div>
+            {% endif %}
 
-                {% if request.query_params.get('error') == 'borrar_admin_no_permitido' %}
-                <div class="notice error">No se pueden borrar cuentas con rol de administrador.</div>
-                {% endif %}
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Usuario</th>
+                        <th>Rol</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for usuario in usuarios %}
+                    <tr>
+                        <td>{{ usuario.id }}</td>
+                        <td>{{ usuario.username }}</td>
+                        <td>
+                            {% if usuario.is_admin %}
+                                <span class="badge badge-warm">Administrador</span>
+                            {% else %}
+                                <span class="badge">Usuario</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if usuario.is_admin %}
+                                <span class="badge">No se puede borrar</span>
+                            {% elif usuario.id == user.id %}
+                                <span class="badge">Tu cuenta</span>
+                            {% else %}
+                            <form method="post" action="/admin/borrar_usuario" class="rating-form">
+                                <input type="hidden" name="id" value="{{ usuario.id }}">
+                                <button class="btn btn-danger" type="submit"
+                                                onclick="return confirm('¿Estás seguro de borrar al usuario {{ usuario.username }}?')">
+                                    Borrar
+                                </button>
+                            </form>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </section>
 
-                <table class="table">
-                    <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th>Usuario</th>
-                            <th>Rol</th>
-                            <th>Acciones</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for usuario in usuarios %}
-                        <tr>
-                            <td>{{ usuario.id }}</td>
-                            <td>{{ usuario.username }}</td>
-                            <td>
-                                {% if usuario.is_admin %}
-                                    <span class="badge badge-warm">Administrador</span>
-                                {% else %}
-                                    <span class="badge">Usuario</span>
-                                {% endif %}
-                            </td>
-                            <td>
-                                {% if usuario.is_admin %}
-                                    <span class="badge">No se puede borrar</span>
-                                {% elif usuario.id == user.id %}
-                                    <span class="badge">Tu cuenta</span>
-                                {% else %}
-                                <form method="post" action="/admin/borrar_usuario" class="rating-form">
-                                    <input type="hidden" name="id" value="{{ usuario.id }}">
-                                    <button class="btn btn-danger" type="submit"
-                                            onclick="return confirm('¿Estás seguro de borrar al usuario {{ usuario.username }}?')">
-                                        Borrar
-                                    </button>
-                                </form>
-                                {% endif %}
-                            </td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </section>
-
-            <section class="card stack">
-                <h2>Gestion de videojuegos</h2>
-                <div class="actions">
-                    <a class="btn" href="/insert_videojuegos">Anadir videojuego</a>
-                    <a class="btn btn-ghost" href="/videojuegos">Ver videojuegos</a>
-                    <a class="btn btn-ghost" href="/borrar_videojuegos">Borrar videojuegos</a>
-                </div>
-            </section>
-        </div>
-    </main>
-
-    <footer class="footer">
-        <a href="/">Volver al inicio</a>
-    </footer>
-</body>
-</html>
+        <section class="card stack">
+            <h2>Gestion de videojuegos</h2>
+            <div class="actions">
+                <a class="btn" href="/insert_videojuegos">Anadir videojuego</a>
+                <a class="btn btn-ghost" href="/videojuegos">Ver videojuegos</a>
+                <a class="btn btn-ghost" href="/borrar_videojuegos">Borrar videojuegos</a>
+            </div>
+        </section>
+    </div>
+{% endblock %}

@@ -1,51 +1,27 @@
-<!doctype html>
-<html lang="es">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Editar Videojuego</title>
-    <link rel="stylesheet" href="/static/style.css" />
-  </head>
-  <body class="page">
-    <header class="topbar">
-      <div class="container topbar-inner">
-        <div class="brand">
-          <div class="brand-title">Videojuegos Hub</div>
-          <div class="brand-sub">Edicion rapida</div>
+{% extends "base.html" %}
+
+{% block title %}Editar Videojuego{% endblock %}
+{% block brand_sub %}Edicion rapida{% endblock %}
+
+{% block content %}
+  <div class="container">
+    <section class="card stack">
+      <h1>Editar videojuego</h1>
+      <p>Actualiza el nombre del videojuego y guarda los cambios.</p>
+
+      <form class="form" method="post" action="/do_actualizar_videojuego">
+        <input type="hidden" name="id" value="{{ videojuego.id }}" />
+
+        <div class="form-row">
+          <label for="nombre">Nombre</label>
+          <input type="text" id="nombre" name="nombre" value="{{ videojuego.nombre }}" required />
         </div>
-        <nav class="nav">
-          <a href="/">Inicio</a>
-          <a href="/videojuegos">Videojuegos</a>
-          <a href="/logout">Salir</a>
-        </nav>
-      </div>
-    </header>
 
-    <main class="main">
-      <div class="container">
-        <section class="card stack">
-          <h1>Editar videojuego</h1>
-          <p>Actualiza el nombre del videojuego y guarda los cambios.</p>
-
-          <form class="form" method="post" action="/do_actualizar_videojuego">
-            <input type="hidden" name="id" value="{{ videojuego.id }}" />
-
-            <div class="form-row">
-              <label for="nombre">Nombre</label>
-              <input type="text" id="nombre" name="nombre" value="{{ videojuego.nombre }}" required />
-            </div>
-
-            <div class="actions">
-              <button class="btn" type="submit">Actualizar</button>
-              <a class="btn btn-ghost" href="/videojuegos">Volver a la lista</a>
-            </div>
-          </form>
-        </section>
-      </div>
-    </main>
-
-    <footer class="footer">
-      <a href="/">Volver al inicio</a>
-    </footer>
-  </body>
-</html>
+        <div class="actions">
+          <button class="btn" type="submit">Actualizar</button>
+          <a class="btn btn-ghost" href="/videojuegos">Volver a la lista</a>
+        </div>
+      </form>
+    </section>
+  </div>
+{% endblock %}

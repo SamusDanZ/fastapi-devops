@@ -1,41 +1,17 @@
-<!doctype html>
-<html lang="es">
-    <head>
-        <meta charset="utf-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>Videojuego insertado</title>
-        <link rel="stylesheet" href="/static/style.css" />
-    </head>
-    <body class="page">
-        <header class="topbar">
-            <div class="container topbar-inner">
-                <div class="brand">
-                    <div class="brand-title">Videojuegos Hub</div>
-                    <div class="brand-sub">Operacion completada</div>
-                </div>
-                <nav class="nav">
-                    <a href="/">Inicio</a>
-                    <a href="/videojuegos">Videojuegos</a>
-                    <a href="/logout">Salir</a>
-                </nav>
-            </div>
-        </header>
+{% extends "base.html" %}
 
-        <main class="main">
-            <div class="container">
-                <section class="card stack">
-                    <h1>Videojuego insertado</h1>
-                    <div class="notice">El videojuego se ha guardado correctamente.</div>
-                    <div class="actions">
-                        <a class="btn" href="/videojuegos">Volver a la lista</a>
-                        <a class="btn btn-ghost" href="/insert_videojuegos">Insertar otro</a>
-                    </div>
-                </section>
-            </div>
-        </main>
+{% block title %}Videojuego insertado{% endblock %}
+{% block brand_sub %}Operacion completada{% endblock %}
 
-        <footer class="footer">
-            <a href="/">Volver al inicio</a>
-        </footer>
-    </body>
-</html>
+{% block content %}
+  <div class="container">
+    <section class="card stack">
+      <h1>Videojuego insertado</h1>
+      <div class="notice">El videojuego se ha guardado correctamente.</div>
+      <div class="actions">
+        <a class="btn" href="/videojuegos">Volver a la lista</a>
+        <a class="btn btn-ghost" href="/insert_videojuegos">Insertar otro</a>
+      </div>
+    </section>
+  </div>
+{% endblock %}
